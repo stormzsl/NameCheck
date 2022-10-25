@@ -1,2 +1,2 @@
-include ':app', ':annotator', ':annotation', ':annotationlibrary'
+include ':app', ':compiler'
 
