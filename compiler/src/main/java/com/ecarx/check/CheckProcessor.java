@@ -16,9 +16,13 @@ import javax.lang.model.element.TypeElement;
 
 
 @SupportedAnnotationTypes("*") //用"*"表示支持所有的Annotations
-@SupportedSourceVersion(SourceVersion.RELEASE_7) //只支持JDK1.7
 @AutoService(Processor.class)
 public class CheckProcessor extends AbstractProcessor {
+
+    @Override
+    public SourceVersion getSupportedSourceVersion() {
+        return SourceVersion.latestSupported();
+    }
 
     /**
      * 跟元素相关的辅助类，帮助我们去获取一些元素相关的信息

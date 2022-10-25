@@ -28,7 +28,7 @@ public class NameCheckScanner extends ElementScanner6<Void,Void> {
 
     public NameCheckScanner(ProcessingEnvironment processingEnvironment){
         this.logger = new Logger(processingEnvironment.getMessager());
-        this.elementHelper = new ElementHelper(processingEnvironment.getElementUtils(), processingEnvironment.getTypeUtils());
+        this.elementHelper = new ElementHelper(processingEnvironment);
     }
     /**
      * 此方法用于检查Java类/接口
