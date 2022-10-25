@@ -7,6 +7,10 @@ buildscript {
     repositories {
         mavenCentral()
         google()
+
+        maven {//1.配置本地Maven仓库
+            url this.file('repository')
+        }
     }
 
     dependencies {
@@ -23,5 +27,10 @@ allprojects {
         mavenLocal()
         mavenCentral()
         google()
+
+        //2.配置本地Maven仓库地址
+        maven {
+            url this.file('repository')
+        }
     }
 }
