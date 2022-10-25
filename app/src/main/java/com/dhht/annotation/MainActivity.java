@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 
 public class MainActivity extends Activity {
 
+    private static final String temp = "jj";
     private String MStr;
 
     private String GetMethod(){
