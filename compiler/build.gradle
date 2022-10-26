@@ -1,5 +1,5 @@
 apply plugin: 'java-library'
-
+apply from: rootProject.file('gradle/publish.gradle')
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     annotationProcessor 'com.google.auto.service:auto-service:1.0-rc7'
@@ -10,4 +10,3 @@ sourceCompatibility = "7"
 targetCompatibility = "7"
 
 
-apply from: rootProject.file('gradle/publish.gradle')

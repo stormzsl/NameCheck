@@ -1,16 +1,11 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-kapt'//1.依赖apt注解处理器插件
 apply plugin: 'kotlin-android-extensions'
 
-//kapt {
-//    arguments {
-//        arg("AROUTER_MODULE_NAME", project.getName())
-//    }
-//}
-
 dependencies {
-    kapt project(':compiler')
+//    kapt project(':compiler')//2.依赖检查器插件
+    kapt 'com.ecarx:compiler:0.0.2'//2.依赖检查器插件
 
     implementation "com.android.support:appcompat-v7:${SUPPORT_LIB_VERSION}"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
@@ -23,6 +18,11 @@ android {
     defaultConfig {
         minSdkVersion Integer.parseInt(MIN_SDK_VERSION)
         targetSdkVersion Integer.parseInt(TARGET_SDK_VERSION)
+        //kapt {
+//    arguments {
+//        arg("AROUTER_MODULE_NAME", project.getName())
+//    }
+//}
     }
 
     compileOptions {

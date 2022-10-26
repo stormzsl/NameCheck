@@ -1,29 +1,48 @@
 package com.ecarx.check;
-import javax.annotation.processing.Messager;
 import javax.annotation.processing.ProcessingEnvironment;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.lang.model.util.Elements;
 import javax.lang.model.util.Types;
-import javax.tools.Diagnostic;
 
 import static com.ecarx.check.Constants.ANDROIDX_PACKAGE;
 import static com.ecarx.check.Constants.ANDROID_APP_ACTIVITY_JAVA;
 import static com.ecarx.check.Constants.ANDROID_GENERATE_R_JAVA;
 import static com.ecarx.check.Constants.ANDROID_PACKAGE;
 import static com.ecarx.check.Constants.JAVA_PACKAGE;
+import static javax.lang.model.element.Modifier.PRIVATE;
 
 public class ElementHelper {
 
     private Elements elementsUtils;
     private Types typeUtils;
+    private Logger logger;
 
-    private Messager messager;
+    private static class ElementHelperSingleHolder{
 
-    public ElementHelper(ProcessingEnvironment environment) {
+        private static final ElementHelper INSTANCE = new ElementHelper();
+    }
+
+    public static ElementHelper getInstance(){
+        return ElementHelperSingleHolder.INSTANCE;
+    }
+
+    public void init(ProcessingEnvironment environment){
         this.elementsUtils = environment.getElementUtils();
         this.typeUtils = environment.getTypeUtils();
-        this.messager = environment.getMessager();
+        this.logger = new Logger(environment.getMessager());
+    }
+
+    public Elements getElementsUtils() {
+        return elementsUtils;
+    }
+
+    public Types getTypeUtils() {
+        return typeUtils;
+    }
+
+    public Logger getLogger() {
+        return logger;
     }
 
     //获取节点所属包名
@@ -40,6 +59,13 @@ public class ElementHelper {
    public String getFullClassName(TypeElement element){
       return element.getQualifiedName().toString() ;
    }
+
+    /**
+     * 判断修饰符是不是PRIVATE
+     */
+    public static boolean isPrivate(Element annotatedClass) {
+        return annotatedClass.getModifiers().contains(PRIVATE);
+    }
 
 
     public boolean isValidTypeElement(TypeElement element){
@@ -72,12 +98,6 @@ public class ElementHelper {
     }
     // 判断是否是系统类如R.java，android.*
     public boolean matchSystemTypeElement(TypeElement element){
-//        if(getFullClassName(element).contains("R.")){
-//            messager.printMessage(Diagnostic.Kind.WARNING,">>>>>>>>");
-//            messager.printMessage(Diagnostic.Kind.WARNING,getFullClassName(element));
-//            messager.printMessage(Diagnostic.Kind.WARNING,"<<<<<<<<");
-//        }
-
         if(getFullClassName(element).contains(ANDROID_GENERATE_R_JAVA)){
             return true;
         }

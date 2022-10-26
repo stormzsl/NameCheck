@@ -1,188 +1,101 @@
-# 集成Android常用注解
-### Butterknife
-[Butterknife](https://github.com/JakeWharton/butterknife)，简单用过但是不是很喜欢
-```java
- @BindView(R.id.etUserName) 
- EditText etUserName;
- 
- @OnClick(R.id.submit) 
- void submit() {
-    // TODO call server...
-  }
-```
+##前言
+> 编译时检查器，对用户是无感知的，基于APT实现不影响运行时性能，对不符合编码规范的进行强管控，
+> 只要你有想象力可以动态扩展，目前实现了代码命名规范检查基础功能
+> 后续考虑根据规则配置文件动态化构建检查逻辑，提高检查效率，灵活支持多业务复用，邮件/echarx消息通知实时提醒提供可视化功能
 
-### AndroidAnnotations
-最开始接触注解框架是[androidannotations](https://github.com/androidannotations/androidannotations/wiki/AvailableAnnotations)，有很多非常好用的注解：初始化控件、设置点击事件、线程切换等等，功能很强大；比较喜欢**androidannotations**的线程切换，而且点击事件和绑定控件都不需要输入控件的`id`值，只需要变量名或者方法名就可以完成，感觉很简洁，而且写代码的时候很方便，直接从布局文件复制`id`；
-```java
+###1.检查时机：(1).编译构建build时 (2).CI提PR时，对于不符合命名规范要求的进行强行管控
 
-@BindView 
-EditText etUserName;
+###2.检查器适用场景：目前支持类/接口，变量/局部变量，方法/构造方法支持命名规范检查，同时支持java和kotlin项目
 
-@OnClick
- void submit() {
-    // TODO call server...
-  }
-  
-@Background
-void doSomething(){
-    // TODO call server...
-}
+###3.检查器插件依赖支持：支持项目本地依赖和nexus远程依赖，方便多团队多业务复用
 
-@UiThread
-void doSomething(){
-    // TODO call server...
-}
-```
-但是有个缺点，就是太强大了导致框架比较重
+###4.检查器插件远程依赖生成
+####4.1:修改compiler模块的gradle.properties中的版本VERSION_NAME 
+####4.2:执行./gradlew :compiler:uploadArchives任务
 
-### 自定义注解
-在了解了注解后我开始自己实现注解，模仿`androidannotations`的使用方法；使用编译时注解，在编译时生成我们需要的代码，具体实现可以看之前的文章，其实还是很简单的
->* 使用注解实现Android线程切换：https://www.jianshu.com/p/89d7b88eb76c
->* Android编译时注解：https://www.jianshu.com/p/3052fa51ee95
->* Android中注解的使用：https://www.jianshu.com/p/de13b00042d6
+###5.项目工程配置
+####5.1 根目录中build.gradle配置插件Maven仓库下载地址
+```groovy
+buildscript {
+    ext.kotlin_version = '1.4.10'
+    ext.arouter_register_version = '1.0.2'
 
-#### 初始化
-需要使用注解的类中需要初始化
-```java
-ViewInjector.injectView(this);
-```
+    repositories {
+        mavenCentral()
+        google()
 
-
-#### 控件初始化@ViewById
-
-因为控件ID在非`app`模块就不是常量了，不能设置为注解的值，这也是Butterknife在其他模块需要使用`R2.id.xxx`的原因，所以涉及到控件ID值的都提供两种方法
-
-* 变量名和控件ID值一样，不需要设置ID值
-
-```java
-//变量名和控件ID值一样
-@ViewById
-TextView tvLogin,tvName;
-```
-
-* 被注解的变量名可以和控件ID值不一样，但是需要手动设置控件ID值，这种方法只能在`app`模块使用
-
-```java
-//手动设置id
-@ViewById(R.id.et_pwd)
-EditText etPwd;
-```
-
-#### 点击事件@Click
-
-```java
-@Click
-void tvLogin() {
-    // TODO call server...
-}
-
-@Click
-void tvLogin(R.id.tvLogin) {
-    // TODO call server...
-}
-```
-
-##### 点击防抖动
-新增防抖动功能，使用了`@Click`注解的按钮默认在200ms内只能点击一次，可以通过设置全局修改，也可以修改单个点击事件的间隔
-```java
-//全局修改点击间隔，需要尽早设置
-AvoidShake.setClickIntervalTime(1000);
-
-//单个设置点击间隔
-@Click(interval = 100)
-void txtView() {
-    ...
-}
-```
-
-#### 线程切换@Background
-`delay`值默认为0，可以不设置，集成了`rxjava`实现线程切换，但是不提供接口
-```java
-@Background(delay = 1000)
-void backgroud() {
-    Log.e("backgroud", Thread.currentThread().getName() + "：" + System.currentTimeMillis());
-}
-```
-#### 线程切换@UiThread
-```java
-@UiThread(delay = 1000 * 5)
-void toast(String msg) {
-    Log.e("toast", Thread.currentThread().getName() + "：" + System.currentTimeMillis());
-}
-```
-
-#### 加载更多@RecyclerMore
-其实是RecyclerView滑动到底部监听，可以实现下拉加载更多的功能，使用很方便，变量名就是方法名，也可以手动设置控件ID值；可以设置`pageSize`的值，如果当前加载的item数量小于`pageSize`那么就不会触发方法，默认滑动到底部监听就会触发方法
-```java
-@RecyclerMore(pageSize = 5)
-void ryclView() {
-    mList.addAll(mList2);
-    mAdapter.notifyDataSetChanged();
-}
-```
-
-### 集成方法
-
-支持aspectj和jitpack，在工程的grade添加
-```
-...
- dependencies {
-        classpath 'com.hujiang.aspectjx:gradle-android-plugin-aspectjx:2.0.4'
-    }
-...
-
-
-//Add it in your root build.gradle at the end of repositories:
-allprojects {
-        repositories {
-            ...
-            maven { url 'https://jitpack.io' }
+        maven {//1.配置本地Maven仓库
+            url this.file('repository')
         }
     }
-```
 
-
-
-
-在使用的module的grade中添加依赖和注解处理器，以及支持aspectj
-```
-...
-apply plugin: 'android-aspectjx'
-...
-
-implementation 'com.github.tyhjh.Annotation:annotationlibrary:v1.0.7'
-annotationProcessor 'com.github.tyhjh.Annotation:annotator:v1.0.7'
-```
-
-需要支持lambda 表达式，在模块的build.gradle的android节点下面添加支持
-```
-compileOptions {
-        sourceCompatibility = '1.8'
-        targetCompatibility = '1.8'
+    dependencies {
+        classpath 'com.android.tools.build:gradle:4.1.1'
+        classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
+        classpath 'com.github.dcendents:android-maven-gradle-plugin:2.1'
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "com.alibaba:arouter-register:$arouter_register_version"
     }
+}
+
+allprojects {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        google()
+
+        //2.配置本地Maven仓库地址
+        maven {
+            url this.file('repository')
+        }
+    }
+}
 ```
 
+####5.2 java工程依赖检查器
+######5.2.1 本地依赖
+```groovy
+annotationProcessor project(':compiler')
+```
+######5.2.2 远程依赖
+```groovy
+annotationProcessor 'com.ecarx:compiler:0.0.2'
+```
 
+####5.3 kotlin工程依赖检查器
+######5.3.1 本地依赖
+```groovy
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'//1.依赖apt注解处理器插件
+apply plugin: 'kotlin-android-extensions'
 
-注解都在实际项目中用了一段时间，还不错；遇到需要的注解就会不断的添加进去
+dependencies {
+    kapt project(':compiler')//2.依赖检查器插件
 
+    implementation "com.android.support:appcompat-v7:${SUPPORT_LIB_VERSION}"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+}
+```
 
-### 项目地址
+######5.3.2 远程依赖
+```groovy
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'//1.依赖apt注解处理器插件
+apply plugin: 'kotlin-android-extensions'
 
-> https://github.com/tyhjh/Annotation
+dependencies {
+    kapt 'com.ecarx:compiler:0.0.2'//2.依赖检查器插件
 
+    implementation "com.android.support:appcompat-v7:${SUPPORT_LIB_VERSION}"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+}
+```
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+###6.使用
+```shell
+ ./gradlew :app:build :javaModule:build :kotlinModule:build
+```

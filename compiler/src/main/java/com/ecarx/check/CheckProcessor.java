@@ -9,7 +9,6 @@ import javax.annotation.processing.ProcessingEnvironment;
 import javax.annotation.processing.Processor;
 import javax.annotation.processing.RoundEnvironment;
 import javax.annotation.processing.SupportedAnnotationTypes;
-import javax.annotation.processing.SupportedSourceVersion;
 import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
@@ -31,12 +30,12 @@ public class CheckProcessor extends AbstractProcessor {
      * - TypeElement  代表类或接口元素
      * - PackageElement  代表包元素
      */
-    private NameChecker nameChecker;
+    private CheckDispatcher checkDispatcher;
 
     @Override
     public synchronized void init(ProcessingEnvironment processingEnv) {
         super.init(processingEnv);
-        nameChecker = new NameChecker(processingEnv);
+        checkDispatcher = new CheckDispatcher(processingEnv);
     }
 
     /*
@@ -46,7 +45,7 @@ public class CheckProcessor extends AbstractProcessor {
     public boolean process(Set<? extends TypeElement> set, RoundEnvironment roundEnvironment) {
         if(!roundEnvironment.processingOver()){
             for (Element element : roundEnvironment.getRootElements()) {
-                nameChecker.checkNames(element);
+                checkDispatcher.checkNames(element);
             }
         }
         return false;

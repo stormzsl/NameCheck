@@ -33,5 +33,5 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 
 //    annotationProcessor project(':compiler')本地依赖
-    annotationProcessor 'com.ecarx:compiler:0.0.1'//远程依赖
+    annotationProcessor 'com.ecarx:compiler:0.0.2'//远程依赖
 }
