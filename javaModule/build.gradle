@@ -20,9 +20,14 @@ android {
         }
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_7
-        targetCompatibility JavaVersion.VERSION_1_7
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
+
+    lintOptions {
+        abortOnError false
+    }
+
 }
 
 dependencies {
@@ -32,6 +37,6 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
 
-//    annotationProcessor project(':compiler')本地依赖
-    annotationProcessor 'com.ecarx:compiler:0.0.2'//远程依赖
+    annotationProcessor project(':compiler')//本地依赖
+//    annotationProcessor 'com.ecarx:compiler:0.0.2'//远程依赖
 }

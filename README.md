@@ -99,3 +99,5 @@ dependencies {
 ```shell
  ./gradlew :app:build :javaModule:build :kotlinModule:build
 ```
+
+参考文档:https://blog.csdn.net/u010126792/article/details/95614328
