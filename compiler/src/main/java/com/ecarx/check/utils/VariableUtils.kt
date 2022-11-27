@@ -15,6 +15,7 @@ import javax.lang.model.element.VariableElement
 
 /**
  * 判断一个变量是否是常量
+ * getConstantValue() :如果属性变量被final修饰，则可以使用该方法获取它的值
  */
 fun variableIsConstant(variableElement: VariableElement): Boolean {
     return if (variableElement.enclosingElement.kind == ElementKind.INTERFACE) {

@@ -26,7 +26,6 @@ class CheckDispatcher(processingEnv: ProcessingEnvironment) {
 
     fun checkNames(element: Element?) {
         _checkScanner.scan(element)
-        ElementHelper.logger.error("********",element)
     }
 
 
