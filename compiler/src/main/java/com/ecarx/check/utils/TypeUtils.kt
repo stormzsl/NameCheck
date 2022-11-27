@@ -56,3 +56,11 @@ fun matchSystemTypeElement(element: TypeElement): Boolean {
     }
     return getFullClassName(element).startsWith(JAVA_PACKAGE)
 }
+
+/**
+ * if true mean this class is java class
+ */
+private fun isJavaFile(element: TypeElement): Boolean {
+    val tmMetadata = ElementHelper.elementsUtils.getTypeElement("kotlin.Metadata").asType()
+    return element.annotationMirrors.find { it.annotationType == tmMetadata } == null
+}
