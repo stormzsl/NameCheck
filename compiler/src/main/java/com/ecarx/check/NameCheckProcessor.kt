@@ -1,5 +1,6 @@
 package com.ecarx.check
 
+import com.ecarx.check.config.ConfigManager
 import javax.annotation.processing.*
 import javax.lang.model.SourceVersion
 import javax.lang.model.element.TypeElement
@@ -43,7 +44,7 @@ class NameCheckProcessor : AbstractProcessor() {
     override fun process(set: Set<TypeElement?>, roundEnvironment: RoundEnvironment): Boolean {
         if (!roundEnvironment.processingOver()) {
             for (element in roundEnvironment.rootElements) {
-                checkDispatcher!!.checkNames(element)
+                checkDispatcher?.checkNames(element,configFilePath)
             }
         }
         return false

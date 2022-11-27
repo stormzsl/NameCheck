@@ -1,36 +1,24 @@
 package com.ecarx.check
 
-import com.ecarx.check.utils.matchSystemElement
 import javax.lang.model.element.Element
 
 const val ANDROID_APP_ACTIVITY_JAVA = "android.app.activity"
-const val ANDROID_GENERATE_R_JAVA = "R."
 const val ANDROIDX_PACKAGE = "androidx."
 const val JAVA_PACKAGE = "java."
 const val ANDROID_PACKAGE = "android."
 
-
-fun isEmpty(cs: CharSequence?): Boolean {
-    return cs == null || cs.isEmpty()
-}
-
-fun isEmpty(coll: Collection<*>?): Boolean {
-    return coll == null || coll.isEmpty()
-}
-
-fun isEmpty(map: Map<*, *>?): Boolean {
-    return map == null || map.isEmpty()
-}
+const val ANDROID_GENERATE_R_JAVA = "R."
+const val ANDROID_GENERATE_BUILD_CONFIG = "BuildConfig"
 
 /**
  * 检查传入的Element是否符合驼式命名法，如果不符合，则抛出error信息中断编译
  */
 fun checkCamelCase(e: Element, initialCaps: Boolean) {
 
-    //1.如果是系统类包括的过滤
-    if (matchSystemElement(e)) {
-        return
-    }
+//    //1.如果是系统类包括的过滤
+//    if (matchSystemElement(e)) {
+//        return
+//    }
     val name = e.simpleName.toString()
     var previousUpper = false
     var conventional = true
@@ -73,10 +61,10 @@ fun checkCamelCase(e: Element, initialCaps: Boolean) {
  */
 fun checkAllCaps(e: Element) {
 
-    //1.如果是系统类包括的过滤
-    if (matchSystemElement(e)) {
-        return
-    }
+//    //1.如果是系统类包括的过滤
+//    if (matchSystemElement(e)) {
+//        return
+//    }
     val name = e.simpleName.toString()
     var conventional = true
     val firstCodePoint = name.codePointAt(0)

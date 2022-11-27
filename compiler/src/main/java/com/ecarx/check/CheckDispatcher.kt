@@ -1,8 +1,7 @@
 package com.ecarx.check
 
+import com.ecarx.check.config.ConfigManager
 import javax.annotation.processing.ProcessingEnvironment
-import com.ecarx.check.CheckScanner
-import com.ecarx.check.ElementHelper
 import javax.lang.model.element.Element
 
 /*
@@ -24,9 +23,9 @@ class CheckDispatcher(processingEnv: ProcessingEnvironment) {
         ElementHelper.init(processingEnv)
     }
 
-    fun checkNames(element: Element?) {
-        _checkScanner.scan(element)
+    fun checkNames(element: Element?,configFilePath:String?) {
+        if(!ConfigManager.getInstance(configFilePath).matchExcludeElement(element)){
+            _checkScanner.scan(element)
+        }
     }
-
-
 }
