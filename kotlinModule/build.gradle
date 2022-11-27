@@ -14,15 +14,14 @@ dependencies {
 android {
     compileSdkVersion Integer.parseInt(COMPILE_SDK_VERSION)
     buildToolsVersion BUILDTOOLS_VERSION
-
     defaultConfig {
         minSdkVersion Integer.parseInt(MIN_SDK_VERSION)
         targetSdkVersion Integer.parseInt(TARGET_SDK_VERSION)
-        //kapt {
-//    arguments {
-//        arg("AROUTER_MODULE_NAME", project.getName())
-//    }
-//}
+        kapt {
+            arguments {
+                arg("config_file_path", new File('check_config.json').getAbsolutePath())
+            }
+        }
     }
 
     compileOptions {

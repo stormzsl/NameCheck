@@ -1,14 +1,15 @@
 package com.ecarx.check
 
-import javax.annotation.processing.AbstractProcessor
-import javax.annotation.processing.ProcessingEnvironment
-import javax.annotation.processing.RoundEnvironment
-import javax.annotation.processing.SupportedAnnotationTypes
+import javax.annotation.processing.*
 import javax.lang.model.SourceVersion
 import javax.lang.model.element.TypeElement
 
+@SupportedOptions("config_file_path")
 @SupportedAnnotationTypes("*") //用"*"表示支持所有的Annotations
-class CheckProcessor : AbstractProcessor() {
+class NameCheckProcessor : AbstractProcessor() {
+
+    private var configFilePath: String? = null
+
     override fun getSupportedSourceVersion(): SourceVersion {
         return SourceVersion.latestSupported()
     }
@@ -21,10 +22,19 @@ class CheckProcessor : AbstractProcessor() {
      * - PackageElement  代表包元素
      */
     private var checkDispatcher: CheckDispatcher? = null
+
     @Synchronized
     override fun init(processingEnv: ProcessingEnvironment) {
         super.init(processingEnv)
         checkDispatcher = CheckDispatcher(processingEnv)
+        getArgument(processingEnv)
+
+    }
+    // 获取注解参数
+    private fun getArgument(processingEnv: ProcessingEnvironment) {
+        val options: Map<String, String> = processingEnv.options
+        configFilePath = options["config_file_path"]
+        println("***** 传递的参数configFilePath:$configFilePath")
     }
 
     /*
