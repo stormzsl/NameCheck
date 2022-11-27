@@ -2,6 +2,8 @@ package com.ecarx.check.name
 
 import com.ecarx.check.checkAllCaps
 import com.ecarx.check.checkCamelCase
+import com.ecarx.check.utils.checkPrivateVariableElement
+import com.ecarx.check.utils.isPrivateVariableElement
 import com.ecarx.check.utils.variableIsConstant
 import com.ecarx.check.utils.variableIsEnum
 import javax.lang.model.element.VariableElement
@@ -12,7 +14,7 @@ class VariableNameCheck : BaseNameCheck {
         if (variableIsConstant(e) || variableIsEnum(e)) {
             checkAllCaps(e)
         } else {
-            checkCamelCase(e, false)
+            checkCamelCase(e, false)//按照驼式命名法规则检查
         }
         return super.visitVariable(e, p)
     }

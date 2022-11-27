@@ -1,5 +1,6 @@
 package com.ecarx.check.utils
 
+import com.ecarx.check.ElementHelper
 import java.util.*
 import javax.lang.model.element.Element
 import javax.lang.model.element.ElementKind
@@ -11,6 +12,7 @@ import javax.lang.model.element.VariableElement
  * 如果是TypeElement则返回PackageElement，如果是TypeParameterElement则返回泛型Element
  *
  * getEnclosedElements() 获取该元素上的直接子元素，类似一个类中有VariableElement。
+ * 打log使用println就好
  */
 
 /**
@@ -39,6 +41,32 @@ fun variableIsEnum(variableElement: VariableElement): Boolean =
 
 fun isValidFieldElement(element: Element): Boolean {
     return element.kind.isField
+}
+
+// 属性是字段还是方法参数
+fun fieldOrParameterElement(variableElement: VariableElement):Boolean{
+     return variableElement.kind == ElementKind.FIELD
+             || variableElement.kind == ElementKind.PARAMETER
+}
+
+/*
+ * 判断属性参数是否是private修饰的
+ */
+fun isPrivateVariableElement(variableElement: VariableElement):Boolean{
+    return variableElement.modifiers.contains(Modifier.PRIVATE) && fieldOrParameterElement(variableElement)
+}
+
+/*
+ * private修饰的私有变量以_开头
+ */
+fun checkPrivateVariableElement(variableElement: VariableElement){
+    if (isPrivateVariableElement(variableElement)){
+        variableElement.simpleName.startsWith('_').let {
+            if(!it){
+                ElementHelper.logger.error("private修饰的属性要以_开头",variableElement)
+            }
+        }
+    }
 }
 
 

@@ -65,7 +65,7 @@ fun checkCamelCase(e: Element, initialCaps: Boolean) {
         }
     }
     if (!conventional) //            messager.printMessage(Diagnostic.Kind.ERROR, "名称“" + name + "”应当符合驼式命名法（Camel Case Names）", e);
-        ElementHelper.logger.error("名称“$name”应当符合驼式命名法（Camel Case Names）", e)
+        ElementHelper.logger.error("名称应当符合驼式命名法", e)
 }
 
 /**
@@ -103,7 +103,5 @@ fun checkAllCaps(e: Element) {
         }
     }
     if (!conventional) ElementHelper.logger.error(
-        "常量“$name”应当全部以大写字母或下划线命名，并且以字母开头",
-        e
-    )
+        "常量应当全部以大写字母或下划线命名，并且以字母开头", e)
 }
