@@ -1,6 +1,5 @@
 package com.ecarx.check
 
-//import com.google.auto.service.AutoService
 import javax.annotation.processing.AbstractProcessor
 import javax.annotation.processing.ProcessingEnvironment
 import javax.annotation.processing.RoundEnvironment
@@ -9,7 +8,6 @@ import javax.lang.model.SourceVersion
 import javax.lang.model.element.TypeElement
 
 @SupportedAnnotationTypes("*") //用"*"表示支持所有的Annotations
-//@AutoService(Processor::class)
 class CheckProcessor : AbstractProcessor() {
     override fun getSupportedSourceVersion(): SourceVersion {
         return SourceVersion.latestSupported()

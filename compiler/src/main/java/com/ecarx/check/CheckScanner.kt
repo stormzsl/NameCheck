@@ -18,8 +18,8 @@ class CheckScanner : ElementScanner8<Void?, Void?>() {
     override fun visitType(e: TypeElement, p: Void?): Void? {
         scan(e.typeParameters, p)
         TypeNameCheck().visitType(e, p)
-        super.visitType(e, p)
-        return null
+        return super.visitType(e, p)
+
     }
 
     /**
@@ -27,8 +27,8 @@ class CheckScanner : ElementScanner8<Void?, Void?>() {
      */
     override fun visitExecutable(e: ExecutableElement, p: Void?): Void? {
         ExecutableNameCheck().visitExecutable(e, p)
-        super.visitExecutable(e, p)
-        return null
+        return super.visitExecutable(e, p)
+
     }
 
     /**
@@ -36,6 +36,6 @@ class CheckScanner : ElementScanner8<Void?, Void?>() {
      */
     override fun visitVariable(e: VariableElement, p: Void?): Void? {
         VariableNameCheck().visitVariable(e, p)
-        return null
+        return super.visitVariable(e,p)
     }
 }
